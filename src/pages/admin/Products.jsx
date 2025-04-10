@@ -9,6 +9,8 @@ import { getAllProducts } from "../../api/products";
 import CreateProduct from "@/components/create-product";
 
 const Products = () => {
+  const [selectedProduct, setSelectedProduct] = React.useState(null);
+
   const productsQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts(),
@@ -32,9 +34,15 @@ const Products = () => {
         </SheetTrigger>
       </div>
 
-      <ProductDataTable products={productsQuery.data} />
+      <ProductDataTable
+        products={productsQuery.data}
+        setSelectedProduct={setSelectedProduct}
+      />
 
-      <CreateProduct />
+      <CreateProduct
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+      />
     </Sheet>
   );
 };

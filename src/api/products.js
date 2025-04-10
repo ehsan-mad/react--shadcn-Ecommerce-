@@ -5,7 +5,7 @@ export const getProducts = async (
   title = "",
   offset = 0,
   categoryId = undefined,
-  limit = 10,
+  limit = 6,
   price_min = 0,
   price_max = Infinity
 ) => {
@@ -55,6 +55,7 @@ export const createProduct = async (product) => {
 
 // update a product
 export const updateProduct = async (product) => {
+  console.log("product", product);
   const res = await fetch(
     `https://api.escuelajs.co/api/v1/products/${product.id}`,
     {
@@ -65,6 +66,7 @@ export const updateProduct = async (product) => {
       body: JSON.stringify(product),
     }
   );
+
   return res.json();
 };
 

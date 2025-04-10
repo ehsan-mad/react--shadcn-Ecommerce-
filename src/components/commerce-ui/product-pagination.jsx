@@ -8,30 +8,28 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export default function ProductPagination() {
+export default function ProductPagination({ setValue, offset, limit, total }) {
+  console.log("total", total);
   return (
     <Pagination>
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
+        {/*<PaginationItem>
           <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
+        </PaginationItem> */}
+
+        {Array.from({ length: Math.ceil(total / limit) }, (_, index) => (
+          <PaginationItem key={index}>
+            <PaginationLink
+              isActive={offset === index * limit}
+              onClick={(e) => {
+                e.preventDefault();
+                setValue("offset", index * limit);
+              }}
+            >
+              {index + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
       </PaginationContent>
     </Pagination>
   );

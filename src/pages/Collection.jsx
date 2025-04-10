@@ -47,6 +47,14 @@ const Collection = () => {
     queryFn: () => getProducts(title, offset, categoryId),
   });
 
+  if (!productsQuery?.data?.totalItems) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h1 className="text-3xl font-bold">Loading Products...</h1>
+      </div>
+    );
+  }
+
   return (
     <Sheet>
       <div className="w-full">
@@ -87,8 +95,9 @@ const Collection = () => {
         {/* Pagination */}
         <ProductPagination
           offset={offset}
+          setValue={form.setValue}
           limit={limit}
-          total={productsQuery.data?.total || 0}
+          total={productsQuery?.data?.totalItems}
         />
       </div>
     </Sheet>

@@ -21,22 +21,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProduct, updateProduct } from "../api/products";
 
 const schema = z.object({
+  id: z.number().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   price: z.number().min(1, "Price is required"),
   images: z.array(z.string()).min(1, "At least one image is required"),
+  categoryId: z.number().min(1, "Category is required"),
 });
 
-const CreateProduct = () => {
+const CreateProduct = ({ selectedProduct, setSelectedProduct }) => {
+  const queryClient = useQueryClient();
+
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-      images: [],
+      id: selectedProduct?.id || null,
+      title: selectedProduct?.title || "",
+      description: selectedProduct?.description || "",
+      price: selectedProduct?.price || 0,
+      images: selectedProduct?.images || [],
+      categoryId: selectedProduct?.category?.id || 1,
     },
   });
 
@@ -47,19 +55,64 @@ const CreateProduct = () => {
 
   const { isSubmitting } = form.formState;
 
+  // mutation for creating product
+  const productCreateMutation = useMutation({
+    mutationFn: () => createProduct(form.getValues()),
+    onSuccess: () => {
+      console.log("Product created successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: (data) => updateProduct(data),
+
+    onSuccess: () => {
+      console.log("Product updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
+  });
+
   const onSubmit = (data) => {
     console.log("data", data);
-    // After successful submission, you can programmatically close the sheet here
-    // For example, if you're using a ref or context to control the sheet:
-    // sheetRef.current.close();
+
+    if (isSubmitting) return;
+
+    if (!selectedProduct) {
+      productCreateMutation.mutate();
+    } else {
+      // console.log("updating product", form.getValues());
+      updateProductMutation.mutate(data);
+      setSelectedProduct(null);
+    }
+
+    form.reset();
   };
+
+  React.useEffect(() => {
+    if (selectedProduct) {
+      console.log("selectedProduct", selectedProduct);
+      form.setValue("images", selectedProduct.images);
+      form.setValue("title", selectedProduct.title);
+      form.setValue("description", selectedProduct.description);
+      form.setValue("price", selectedProduct.price);
+      form.setValue("categoryId", selectedProduct.category.id);
+      form.setValue("id", selectedProduct.id);
+    }
+  }, [selectedProduct, form]);
 
   return (
     <SheetContent>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <SheetHeader>
-            <SheetTitle>Create Product</SheetTitle>
+            <SheetTitle>
+              {selectedProduct ? "Update Product" : "Create Product"}
+            </SheetTitle>
           </SheetHeader>
           <SheetDescription className="text-muted-foreground text-sm px-4">
             Add a new product to the store
@@ -156,7 +209,7 @@ const CreateProduct = () => {
           </div>
           <SheetFooter>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create"}
+              {selectedProduct ? "Update" : "Create"}
             </Button>
             <SheetClose asChild>
               <Button variant="outline">Cancel</Button>
