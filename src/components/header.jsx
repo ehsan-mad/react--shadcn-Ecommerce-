@@ -27,8 +27,8 @@ import { Link } from "react-router-dom";
 
 const Header = ({
   logo = {
-    url: "/",
-    src: "../../public/icons8-create-order.gif",
+    url: "/public/icons8-create-order.gif",
+    src: "/",
     alt: "logo",
     title: "EcomTech",
   },
