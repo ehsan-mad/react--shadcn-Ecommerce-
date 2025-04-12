@@ -19,7 +19,7 @@ const categories = [
   { id: 4, name: "Sports" },
 ];
 
-const limit = 6;
+const limit = 9;
 
 const schema = z.object({
   title: z.string().optional(),
@@ -57,9 +57,10 @@ const Collection = () => {
 
   return (
     <Sheet>
-      <div className="w-full">
+      <div className="w-full p-2 rounded-lg shadow-accent bg-accent">
         <BreadcrumbWithCustomSeparator
           items={[{ name: "Collections", path: "/collections" }]}
+          className=" flex items-center justify-center"
         />
 
         {/* Filtering Section */}
@@ -73,10 +74,10 @@ const Collection = () => {
         {/** End of Filtering Section */}
 
         {/* Collection page content goes here */}
-        <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 mx-auto w-full ">
+        <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto w-full container ">
           {productsQuery.isLoading && (
             <div>
-              {Array.from({ length: 6 }, (_, index) => (
+              {Array.from({ length: limit }, (_, index) => (
                 <SkeletonCard key={index} />
               ))}
             </div>
@@ -86,8 +87,8 @@ const Collection = () => {
               key={index}
               imageUrl={product.images[0]}
               title={`Product ${index + 1}`}
-              description={`Description for Product ${index + 1}`}
-              price={Math.floor(Math.random() * 100) + 1}
+              description={product.description.substring(0, 100)}
+              price={product.price}
             />
           ))}
         </div>
@@ -98,6 +99,7 @@ const Collection = () => {
           setValue={form.setValue}
           limit={limit}
           total={productsQuery?.data?.totalItems}
+          
         />
       </div>
     </Sheet>

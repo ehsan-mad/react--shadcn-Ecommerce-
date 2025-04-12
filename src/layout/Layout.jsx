@@ -5,15 +5,19 @@ import Footer from "../components/footer";
 
 const Layout = () => {
   return (
-    <div className="flex flex-col min-h-screen w-full mx-auto max-w-7xl">
+    <>
+    <div className="flex flex-col  w-full mx-auto container  ">
       <Header />
+    </div>
 
-      <main className="flex flex-col py-8 items-start">
+      <main className="flex flex-col rounded-lg  ">
         <Outlet />
       </main>
+<div className="flex flex-col w-full border-t round-lg ">
 
       <Footer />
-    </div>
+</div>
+    </>
   );
 };
 

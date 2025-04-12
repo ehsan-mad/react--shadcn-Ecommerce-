@@ -10,14 +10,35 @@ import {
 
 export default function ProductPagination({ setValue, offset, limit, total }) {
   console.log("total", total);
+  
+  const currentPage = Math.floor(offset / limit);
+  const totalPages = Math.ceil(total / limit);
+  
+  const handlePrevious = (e) => {
+    e.preventDefault();
+    if (currentPage > 0) {
+      setValue("offset", (currentPage - 1) * limit);
+    }
+  };
+  
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (currentPage < totalPages - 1) {
+      setValue("offset", (currentPage + 1) * limit);
+    }
+  };
+  
   return (
     <Pagination>
       <PaginationContent>
-        {/*<PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem> */}
+        <PaginationItem>
+          <PaginationPrevious 
+            onClick={handlePrevious} 
+            className={`cursor-pointer hover:bg-gray-100 ${currentPage === 0 ? 'opacity-50' : ''}`} 
+          />
+        </PaginationItem>
 
-        {Array.from({ length: Math.ceil(total / limit) }, (_, index) => (
+        {Array.from({ length: totalPages }, (_, index) => (
           <PaginationItem key={index}>
             <PaginationLink
               isActive={offset === index * limit}
@@ -25,11 +46,19 @@ export default function ProductPagination({ setValue, offset, limit, total }) {
                 e.preventDefault();
                 setValue("offset", index * limit);
               }}
+              className="cursor-pointer hover:bg-gray-100"
             >
               {index + 1}
             </PaginationLink>
           </PaginationItem>
         ))}
+        
+        <PaginationItem>
+          <PaginationNext 
+            onClick={handleNext} 
+            className={`cursor-pointer hover:bg-gray-100 ${currentPage === totalPages - 1 ? 'opacity-50' : ''}`} 
+          />
+        </PaginationItem>
       </PaginationContent>
     </Pagination>
   );

@@ -150,6 +150,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
         {...props}
       />
     </div>
+    
   )
 }
 

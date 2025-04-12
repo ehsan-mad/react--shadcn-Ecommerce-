@@ -1,5 +1,5 @@
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
-
+import { LuShoppingCart } from "react-icons/lu";
 import {
   Accordion,
   AccordionContent,
@@ -24,12 +24,13 @@ import {
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 
+
 const Header = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
+    url: "/",
+    src: "../../public/icons8-create-order.gif",
     alt: "logo",
-    title: "Shadcnblocks.com",
+    title: "EcomTech",
   },
   menu = [
     { title: "Home", url: "/" },
@@ -41,7 +42,7 @@ const Header = ({
       title: "About",
       url: "/about",
     },
-
+    
     {
       title: "Contact",
       url: "/contact",
@@ -52,9 +53,10 @@ const Header = ({
     signup: { title: "Sign up", url: "/register" },
   },
 }) => {
+  
   return (
-    <section className="py-4">
-      <div className="container">
+    <section className="py-4  ">
+      <div className="container ">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
@@ -73,7 +75,7 @@ const Header = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-4 items-end ">
             <Button asChild variant="outline" size="sm">
               <a href={auth.login.url}>{auth.login.title}</a>
             </Button>
@@ -120,6 +122,7 @@ const Header = ({
                     <Button asChild>
                       <a href={auth.signup.url}>{auth.signup.title}</a>
                     </Button>
+                    
                   </div>
                 </div>
               </SheetContent>
@@ -151,7 +154,7 @@ const renderMenuItem = (item) => {
     <NavigationMenuItem key={item.title}>
       <Link
         to={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+        className="group inline-flex h-10 w-max items-center justify-center rounded-md  px-4 py-2 text-sm font-medium transition-colors hover:bg-[#FDFAF6] hover:text-accent-foreground"
       >
         {item.title}
       </Link>
