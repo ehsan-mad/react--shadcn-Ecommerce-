@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import BreadcrumbWithCustomSeparator from "../components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import ProductItem from "@/components/commerce-ui/product-cards-01";
@@ -11,6 +13,7 @@ import ProductPagination from "@/components/commerce-ui/product-pagination";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { addToCart } from "../states/slices/cartSlice";
 
 const categories = [
   { id: 1, name: "Electronics" },
@@ -28,6 +31,8 @@ const schema = z.object({
 });
 
 const Collection = () => {
+  const dispatch = useDispatch();
+  
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -46,6 +51,12 @@ const Collection = () => {
     queryKey: ["products", title, offset, categoryId],
     queryFn: () => getProducts(title, offset, categoryId),
   });
+
+  // Handle adding product to cart
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success("Item added to cart!");
+  };
 
   if (!productsQuery?.data?.totalItems) {
     return (
@@ -86,9 +97,11 @@ const Collection = () => {
             <ProductItem
               key={index}
               imageUrl={product.images[0]}
-              title={`Product ${index + 1}`}
+              title={product.title || `Product ${index + 1}`}
               description={product.description.substring(0, 100)}
               price={product.price}
+              onAddToCart={() => handleAddToCart(product)}
+              product={product}
             />
           ))}
         </div>

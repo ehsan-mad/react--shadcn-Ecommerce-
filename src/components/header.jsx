@@ -1,5 +1,6 @@
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
-import { LuShoppingCart } from "react-icons/lu";
+import { Book, Menu, Sunset, Trees, Zap, ShoppingCart } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -23,6 +24,30 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
+
+const CartIndicator = ({ onClick }) => {
+  // Updated to match cartSlice structure
+  const cart = useSelector(state => state.cart);
+  // Use cartItems instead of items
+  const cartItems = cart?.cartItems || [];
+  // You can also use the totalQuantity directly from your state
+  const itemCount = cart?.totalQuantity || 0;
+  
+  return (
+    <button 
+      onClick={onClick}
+      className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+      aria-label="Shopping cart"
+    >
+      <ShoppingCart className="h-6 w-6" />
+      {itemCount > 0 && (
+        <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          {itemCount}
+        </span>
+      )}
+    </button>
+  );
+};
 
 
 const Header = ({
@@ -53,6 +78,12 @@ const Header = ({
     signup: { title: "Sign up", url: "/register" },
   },
 }) => {
+  const navigate = useNavigate();
+  
+  const handleCartClick = () => {
+    // Use navigate to go to the cart page without a page reload
+    navigate("/cart");
+  };
   
   return (
     <section className="py-4  ">
@@ -61,12 +92,12 @@ const Header = ({
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link to={logo.url} className="flex items-center gap-2">
               <img src={logo.src} className="max-h-8" alt={logo.alt} />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -75,12 +106,13 @@ const Header = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-4 items-end ">
+          <div className="flex gap-4 items-center">
+            <CartIndicator onClick={handleCartClick} />
             <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
+              <Link to={auth.login.url}>{auth.login.title}</Link>
             </Button>
             <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
+              <Link to={auth.signup.url}>{auth.signup.title}</Link>
             </Button>
           </div>
         </nav>
@@ -89,10 +121,12 @@ const Header = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link to={logo.url} className="flex items-center gap-2">
               <img src={logo.src} className="max-h-8" alt={logo.alt} />
-            </a>
-            <Sheet>
+            </Link>
+            <div className="flex items-center gap-2">
+              <CartIndicator onClick={handleCartClick} />
+              <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu className="size-4" />
@@ -101,9 +135,9 @@ const Header = ({
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
+                    <Link to={logo.url} className="flex items-center gap-2">
                       <img src={logo.src} className="max-h-8" alt={logo.alt} />
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
@@ -117,16 +151,17 @@ const Header = ({
 
                   <div className="flex flex-col gap-3">
                     <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
+                      <Link to={auth.login.url}>{auth.login.title}</Link>
                     </Button>
                     <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
+                      <Link to={auth.signup.url}>{auth.signup.title}</Link>
                     </Button>
                     
                   </div>
                 </div>
               </SheetContent>
-            </Sheet>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
@@ -179,17 +214,17 @@ const renderMobileMenuItem = (item) => {
   }
 
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <Link to={item.url} key={item.title} className="text-md font-semibold">
       {item.title}
-    </a>
+    </Link>
   );
 };
 
 const SubMenuLink = ({ item }) => {
   return (
-    <a
+    <Link
+      to={item.url}
       className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
-      href={item.url}
     >
       <div className="text-foreground">{item.icon}</div>
       <div>
@@ -200,7 +235,7 @@ const SubMenuLink = ({ item }) => {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 };
 

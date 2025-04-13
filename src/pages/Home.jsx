@@ -5,32 +5,71 @@ import {
   CarouselItem,
 } from "../components/ui/carousel";
 import ProductItem from "@/components/commerce-ui/product-cards-01";
+import {SkeletonCard} from "@/components/commerce-ui/ProductSkeleton"
 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../states/slices/product';
+import { addToCart } from '../states/slices/cartSlice';
+import { toast } from 'react-toastify';
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const { items: products, loading, error } = useSelector(state => state.products);
 
   useEffect(() => {
-    // Fetch product data from the API
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(
-          "https://api.escuelajs.co/api/v1/products"
-        );
-        const data = await response.json();
-        setProducts(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      }
-    };
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-    fetchProducts();
-  }, []);
+
+  // const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   // Fetch product data from the API
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://api.escuelajs.co/api/v1/products"
+  //       );
+  //       const data = await response.json();
+  //       setProducts(data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProducts();
+  // }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (<div className="flex flex-col min-h-screen">
+    <main className="flex-grow">
+      {/* Skeleton for carousel section */}
+      <section className="w-full h-full bg-gray-200">
+        <div className="container mx-auto p-4">
+          <div className="h-[400px] bg-gray-300 animate-pulse rounded-lg"></div>
+        </div>
+      </section>
+
+      {/* Skeleton for featured products section */}
+      <div className="bg-accent p-2 rounded-lg shadow-accent">
+        <section className="mx-auto py-8 container">
+          <h2 className="text-2xl font-bold mb-4">Featured Products</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 container">
+            {/* Generate 8 skeleton cards to match the layout */}
+            {Array(8)
+              .fill(0)
+              .map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+);
   }
 
   return (
@@ -72,10 +111,16 @@ const Home = () => {
               {products.slice(0, 8).map((product) => (
                 <ProductItem
                   key={product.id}
-                  imageUrl={product.images}
+                  imageUrl={product.images }
                   title={product.title}
                   description={product.description.substring(0, 100)}
                   price={product.price}
+                  onAddToCart={() => {
+                    console.log("Adding product to cart:", product);
+                    dispatch(addToCart(product));
+
+                    toast.success("Item added to cart!");
+                  }}
                 />
               ))}
             </div>

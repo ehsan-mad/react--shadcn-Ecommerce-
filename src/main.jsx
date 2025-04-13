@@ -16,12 +16,16 @@ import NotFound from "./pages/NotFound";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// import { Provider } from "react-redux";
+import { Provider } from "react-redux";
 // import { PersistGate } from "redux-persist/integration/react";
 // import { store, persistor } from "./store"; // Import the store and persistor
 
 import "./index.css";
 
+import { store } from "./states/store";
+import Cart from "./pages/Cart";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 const queryClient = new QueryClient({});
 
 createRoot(document.getElementById("root")).render(
@@ -29,30 +33,35 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       {/* <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}> */}
-          <Router>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="/collections" element={<Collections />} />
-              </Route>
+      <Provider store={store}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/contact" element={<Contact />} />
+            </Route>
 
-              <Route path="/" element={<AuthLayout />}>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </Route>
+            <Route path="/" element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Route>
 
-              {/** Admin Layout */}
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminHome />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="orders" element={<AdminOrders />} />
-              </Route>
+            {/** Admin Layout */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminHome />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
 
-              {/** 404 Page */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
-        {/* </PersistGate>
+            {/** 404 Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </Provider>
+      {/* </PersistGate>
       </Provider> */}
     </QueryClientProvider>
   </StrictMode>

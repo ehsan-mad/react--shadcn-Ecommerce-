@@ -15,7 +15,7 @@ export const getProducts = async (
     url = `https://api.escuelajs.co/api/v1/products/?limit=${limit}&offset=${offset}&title=${title}&price_min=${price_min}&price_max=${price_max}&categoryId=${categoryId}`;
   }
 
-  console.log("url--->", url);
+  
 
   const totalProductRes = await fetch(
     "https://api.escuelajs.co/api/v1/products"
